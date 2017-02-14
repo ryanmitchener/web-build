@@ -1,0 +1,46 @@
+{
+    "templateVersion": 1,
+    "srcDir": "./src",
+    "buildDir": "./build",
+    "target": "test-target",
+    "targets": {
+        "common": {
+            "dependency": null
+        },
+        "test-target": {
+            "dependency": "common"
+        }
+    },
+    "tasks": {
+        "Scripts": {
+            "globs": [".js", "!.min.js"],
+            "actions": [
+                {
+                    "action": "concat",
+                    "options": {
+                        "separator": "\n\n/*----------*/\n\n",
+                        "output": "/js/app.concat.js"
+                    }
+                }, 
+                {
+                    "action": "js-minify",
+                    "options": {
+                        "output": "/js/app.min.js"
+                    }
+                }
+            ]
+        },
+        "SASS": {
+            "globs": [".scss"],
+            "actions": [{"action": "sass"}]
+        },
+        "Templates": {
+            "globs": [".html"],
+            "actions": [{"action": "collate"}]
+        },
+        "Images": {
+            "globs": ["(.png|.jpg|.svg)"],
+            "actions": [{"action": "collate"}]
+        }
+    }
+}

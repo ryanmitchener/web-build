@@ -1,0 +1,11 @@
+{
+	"version": 3,
+	"sourceRoot": "D:/Dropbox/Git/Go/src/github.com/ryanmitchener/web-build/example/src",
+	"file": "/dev/stdout",
+	"sources": [
+		"vars.scss",
+		"../../../hdr0"
+	],
+	"mappings": "",
+	"names": []
+}
