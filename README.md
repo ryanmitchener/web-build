@@ -9,6 +9,7 @@ Web-build is a simple task runner/build system written in Go, built for web proj
   - Concatenation of assets (specifically JavaScript)
   - Generation of SASS
   - Collation of any other type of file (images/fonts/.etc)
+- Watch for file changes and re-run tasks automatically
 
 
 ## Disclaimers
