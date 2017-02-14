@@ -153,7 +153,7 @@ func setup() error {
 		config.Target = argTarget
 		if !checkValidTarget(argTarget, config) {
 			errorMsg(fmt.Sprintf("The target '%s' is invalid.", argTarget), nil)
-			return &InvalidTargetError{argTarget}
+			return &invalidTargetError{argTarget}
 		}
 	}
 
@@ -356,7 +356,7 @@ func targetPathRegex() (*regexp.Regexp, error) {
 }
 
 func checkValidTarget(targetName string, c Config) bool {
-	for target, _ := range c.Targets {
+	for target := range c.Targets {
 		if target == targetName {
 			return true
 		}

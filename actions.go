@@ -40,7 +40,7 @@ func (action collateAction) Action(files []string, options map[string]string) (o
 
 	for _, file := range files {
 		if strings.Index(file, config.BuildDir) > -1 {
-			errorMsg(fmt.Sprintf("Cannot pass a build directory file to 'collate' action. '%'.", file), nil)
+			errorMsg(fmt.Sprintf("Cannot pass a build directory file to 'collate' action. File: '%s'.", file), nil)
 			continue
 		}
 		newFile := regex.ReplaceAllString(file, "")
@@ -73,9 +73,8 @@ func (action concatAction) Action(files []string, options map[string]string) (ou
 	if !ok {
 		errorMsg("No output file defined for 'concat' action. Skipping task...", nil)
 		return files
-	} else {
-		outputFile = fmt.Sprintf("%s%s", config.BuildDir, options["output"])
 	}
+	outputFile = fmt.Sprintf("%s%s", config.BuildDir, options["output"])
 
 	var concat bytes.Buffer
 	for i, file := range files {
@@ -154,14 +153,14 @@ func (action jsMinifyAction) Action(files []string, options map[string]string) (
 			dir := filepath.Dir(newFile)
 			err = os.MkdirAll(dir, 0744)
 			if err != nil {
-				errorMsg(fmt.Sprint("Could not create directory for '%s' defined in 'jsMinify' action.", newFile), err)
+				errorMsg(fmt.Sprintf("Could not create directory for '%s' defined in 'jsMinify' action.", newFile), err)
 				c <- ""
 				return
 			}
 
 			err = ioutil.WriteFile(newFile, data, 0644)
 			if err != nil {
-				errorMsg(fmt.Sprint("Could not write to '%s' defined in 'jsMinify' action.", newFile), err)
+				errorMsg(fmt.Sprintf("Could not write to '%s' defined in 'jsMinify' action.", newFile), err)
 				c <- ""
 				return
 			}

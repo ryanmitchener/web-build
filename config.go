@@ -44,7 +44,7 @@ func parseConfig() (Config, error) {
 	}
 
 	if !checkValidTarget(unmarshalledData.Target, unmarshalledData) {
-		return unmarshalledData, &InvalidTargetError{unmarshalledData.Target}
+		return unmarshalledData, &invalidTargetError{unmarshalledData.Target}
 	}
 
 	return unmarshalledData, err
