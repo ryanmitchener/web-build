@@ -1,4 +1,5 @@
 # Web-build
+[![Go Report Card](https://goreportcard.com/badge/github.com/ryanmitchener/web-build)](https://goreportcard.com/report/github.com/ryanmitchener/web-build)
 Web-build is a simple task runner/build system written in Go, built for web projects to allow for build targets and managing of specific assets.
 
 
