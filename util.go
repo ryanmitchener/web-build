@@ -13,14 +13,14 @@ func fmtCyan(a ...interface{}) string {
 	if runtime.GOOS == "windows" {
 		return fmt.Sprint(a...)
 	}
-	return fmt.Sprint("\x1b[32m", fmt.Sprint(a...), "\x1b[30m")
+	return fmt.Sprint("\x1b[36m", fmt.Sprint(a...), "\x1b[30m")
 }
 
 func fmtGreen(a ...interface{}) string {
 	if runtime.GOOS == "windows" {
 		return fmt.Sprint(a...)
 	}
-	return fmt.Sprint("\x1b[36m", fmt.Sprint(a...), "\x1b[30m")
+	return fmt.Sprint("\x1b[32m", fmt.Sprint(a...), "\x1b[30m")
 }
 
 func debug(val interface{}) {

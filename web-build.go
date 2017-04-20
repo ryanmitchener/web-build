@@ -135,9 +135,10 @@ func run(done chan<- bool, runWatcher bool) {
 		return
 	}
 
+	fmt.Printf("Building target: %s\n", fmtCyan(config.Target))
 	fmt.Printf("Running Tasks...\n")
 	runTasks(config.Tasks)
-	fmt.Printf("Completed in: %s\n\n", fmtGreen(timestamp()-start, "ms"))
+	fmt.Printf("Completed in: %s\n\n", fmtCyan(timestamp()-start, "ms"))
 
 	if argZip != "" {
 		createZip(argZip)
@@ -224,7 +225,7 @@ func runTask(name string, task Task) {
 		}
 		prevOutput = actioner.Action(prevOutput, action.Options)
 	}
-	fmt.Printf("  %s: %s\n", fmtCyan(name), fmtGreen(timestamp()-start, "ms"))
+	fmt.Printf("  %s: %s\n", fmtGreen(name), fmtCyan(timestamp()-start, "ms"))
 }
 
 func createZip(outputPath string) {
