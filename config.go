@@ -26,7 +26,7 @@ type Task struct {
 // Action defines the struct for a specific action to perform in a task
 type Action struct {
 	Action  string
-	Options map[string]string
+	Options map[string]interface{}
 }
 
 const configFile = "./web-build.json"

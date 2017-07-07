@@ -220,6 +220,8 @@ func runTask(name string, task Task) {
 			actioner = jsMinifyAction{}
 		case "sass":
 			actioner = sassAction{}
+		case "cmd":
+			actioner = cmdAction{}
 		default:
 			continue
 		}

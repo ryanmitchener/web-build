@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -15,12 +16,12 @@ import (
 
 // Actioner defines the interface for any action
 type Actioner interface {
-	Action(files []string, options map[string]string) (outputFiles []string)
+	Action(files []string, options map[string]interface{}) (outputFiles []string)
 }
 
 type collateAction struct{}
 
-func (action collateAction) Action(files []string, options map[string]string) (outputFiles []string) {
+func (action collateAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
 	if len(files) == 0 {
 		return files
 	}
@@ -59,22 +60,22 @@ func (action collateAction) Action(files []string, options map[string]string) (o
 
 type concatAction struct{}
 
-func (action concatAction) Action(files []string, options map[string]string) (outputFiles []string) {
+func (action concatAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
 	if len(files) == 0 {
 		return files
 	}
 
-	separator, ok := options["separator"]
+	separator, ok := options["separator"].(string)
 	if !ok {
 		separator = "\n"
 	}
 
-	outputFile, ok := options["output"]
+	outputFile, ok := options["output"].(string)
 	if !ok {
 		errorMsg("No output file defined for 'concat' action. Skipping task...", nil)
 		return files
 	}
-	outputFile = fmt.Sprintf("%s%s", config.BuildDir, options["output"])
+	outputFile = fmt.Sprintf("%s%s", config.BuildDir, outputFile)
 
 	var concat bytes.Buffer
 	for i, file := range files {
@@ -107,7 +108,7 @@ func (action concatAction) Action(files []string, options map[string]string) (ou
 
 type jsMinifyAction struct{}
 
-func (action jsMinifyAction) Action(files []string, options map[string]string) (outputFiles []string) {
+func (action jsMinifyAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
 	if len(files) == 0 {
 		return files
 	}
@@ -140,9 +141,9 @@ func (action jsMinifyAction) Action(files []string, options map[string]string) (
 				return
 			}
 
-			newFile, ok := options["output"]
+			newFile, ok := options["output"].(string)
 			if len(files) == 1 && ok {
-				newFile = fmt.Sprintf("%s%s", config.BuildDir, options["output"])
+				newFile = fmt.Sprintf("%s%s", config.BuildDir, newFile)
 			} else {
 				file = targetRegex.ReplaceAllString(file, "")
 				file = strings.Replace(file, config.BuildDir, "", -1) // Replace BuildDir because jsMinify can receive build files as input
@@ -182,7 +183,7 @@ func (action jsMinifyAction) Action(files []string, options map[string]string) (
 
 type sassAction struct{}
 
-func (action sassAction) Action(files []string, options map[string]string) (outputFiles []string) {
+func (action sassAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
 	if len(files) == 0 {
 		return files
 	}
@@ -238,4 +239,61 @@ func (action sassAction) Action(files []string, options map[string]string) (outp
 	}
 
 	return outputFiles
+}
+
+type cmdAction struct{}
+
+func (action cmdAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
+	cmdName, ok := options["name"].(string)
+	if !ok {
+		errorMsg("Invalid command name", nil)
+		return outputFiles
+	}
+
+	args, ok := options["args"].([]interface{})
+	if !ok {
+		errorMsg("Invalid arguments array", nil)
+		return outputFiles
+	}
+
+	var argArray []string
+	loopFiles := false
+	for _, arg := range args {
+		var argString string
+		if argString, ok = arg.(string); !ok {
+			errorMsg("Invalid arguments array", nil)
+			return outputFiles
+		}
+
+		if argString == "{FILES}" {
+			argArray = append(argArray, files...)
+		} else {
+			if argString == "{FILE}" {
+				loopFiles = true
+			}
+			argArray = append(argArray, argString)
+		}
+	}
+
+	if loopFiles {
+		for _, file := range files {
+			for i, arg := range argArray {
+				if arg == "{FILE}" {
+					argArray[i] = file
+				}
+			}
+			runCommand(cmdName, argArray)
+		}
+	} else {
+		runCommand(cmdName, argArray)
+	}
+
+	return outputFiles
+}
+
+func runCommand(cmdName string, args []string) {
+	cmd := exec.Command(cmdName, args...)
+	if err := cmd.Run(); err != nil {
+		errorMsg(fmt.Sprintf("Error running command '%s'", cmdName), err)
+	}
 }

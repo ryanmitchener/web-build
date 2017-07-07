@@ -41,6 +41,16 @@
         "Images": {
             "globs": ["(.png|.jpg|.svg)"],
             "actions": [{"action": "collate"}]
+        },
+        "CMD Test": {
+            "globs": [".ts"],
+            "actions": [{
+                "action": "cmd",
+                "options": {
+                    "name": "tsc",
+                    "args": ["-outDir", "./build/ts", "{FILES}"]
+                }
+            }]
         }
     }
 }

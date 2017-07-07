@@ -82,8 +82,8 @@ func filesInPath(path string) (files, dirs []string, err error) {
 
 func errorMsg(message string, err error) {
 	if err != nil {
-		fmt.Printf("Error: %s\n     %s\n\n", message, err)
+		fmt.Printf("\nError: %s\n     %s\n\n", message, err)
 	} else {
-		fmt.Printf("Error: %s\n\n", message)
+		fmt.Printf("\nError: %s\n\n", message)
 	}
 }
