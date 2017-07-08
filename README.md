@@ -94,8 +94,8 @@ target you wish to build. Then you may run `web-build` to compile the applicatio
 
 
 #### Tasks
-A task object and have any name. This name will be printed in the console during execution.
-Tasks will run concurrently and should be considered completely isolated. As such, you should not
+A task can have any name. This name will be printed in the console during execution.
+Tasks will run concurrently and should be considered completely isolated. For this reason, you should not
 have two tasks that manipulate the same files.
 
 Tasks are made up of two properties: `globs` and `actions`. The `globs` property is an array of strings
