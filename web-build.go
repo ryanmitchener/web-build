@@ -80,13 +80,6 @@ func clean() {
 }
 
 func initializeEmptyProject() {
-	var err error
-	config, err = parseConfig()
-	if err != nil {
-		errorMsg("Could not parse configuration file.", err)
-		os.Exit(1)
-	}
-
 	files, err := ioutil.ReadDir("./")
 	if err != nil {
 		errorMsg("Cannot access current working directory to initialize web-build", err)
