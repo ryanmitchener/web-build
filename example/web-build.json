@@ -47,14 +47,12 @@
             "actions": [{
                     "action": "cmd",
                     "options": {
-                        "name": "tsc",
-                        "args": ["--module", "es6", "-outDir", "./build/ts", "{FILES}"]
+                        "command": "tsc --module es6 -outDir ./build/ts {FILES}"
                     }
                 },{
                     "action": "cmd",
                     "options": {
-                        "name": "rollup",
-                        "args": ["./build/ts/test.js", "--format", "iife", "--output", "./build/ts/bundle.js"]
+                        "command": "rollup ./build/ts/test.js --format iife --output ./build/ts/bundle.js"
                     }
                 }
             ]

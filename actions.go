@@ -244,34 +244,26 @@ func (action sassAction) Action(files []string, options map[string]interface{}) 
 type cmdAction struct{}
 
 func (action cmdAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
-	cmdName, ok := options["name"].(string)
+	command, ok := options["command"].(string)
 	if !ok {
 		errorMsg("Invalid command name", nil)
 		return outputFiles
 	}
 
-	args, ok := options["args"].([]interface{})
-	if !ok {
-		errorMsg("Invalid arguments array", nil)
-		return outputFiles
-	}
+	splitCommand := strings.Split(command, " ")
+	cmdName := splitCommand[0]
+	args := splitCommand[1:]
 
 	var argArray []string
 	loopFiles := false
 	for _, arg := range args {
-		var argString string
-		if argString, ok = arg.(string); !ok {
-			errorMsg("Invalid arguments array", nil)
-			return outputFiles
-		}
-
-		if argString == "{FILES}" {
+		if arg == "{FILES}" {
 			argArray = append(argArray, files...)
 		} else {
-			if argString == "{FILE}" {
+			if arg == "{FILE}" {
 				loopFiles = true
 			}
-			argArray = append(argArray, argString)
+			argArray = append(argArray, arg)
 		}
 	}
 
