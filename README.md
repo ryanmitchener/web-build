@@ -4,13 +4,22 @@
 Web-build is a simple task runner/build system written in Go, built for web projects to allow for build targets and managing of specific assets.
 
 
+## Updates
+### 1.1
+- Added "shell" action to run command line commands inside of tasks (i.e. TypeScript, rollup, .etc)
+- Added more errors for configurations
+- Targets are no longer required to use web-build
+- Fixed `web-build init`
+
+
 ## Goals
-- Allow web projects to have build targets to allow rebranding and/or reselling
+- Allow web projects to have build targets to allow for different versions of an app or rebranding/reselling
 - Manage web assets with a few predefined tasks
   - Minification of JavaScript
   - Concatenation of assets (specifically JavaScript)
   - Generation of SASS
-  - Collation of any other type of file (images/fonts/.etc)
+  - Collation of any type of file (images/fonts/.etc)
+  - Run command line commands
 - Watch for file changes and re-run tasks automatically
 
 
@@ -61,8 +70,7 @@ Every `web-build.json` is comprised of a few required top-level elements:
 
 #### Assumptions
 - All target directories live directly inside of `[srcDir]`
-- Every project must have at least one target directory
-- Globs are relative paths beginning after a target directory. For example, if you had a target "*test*" and a glob "*/innerFolder*", the glob would look in "*[srcDir]/test/innerFolder*".
+- Globs are relative paths. For applications without targets, globs are relative to the `srcDir`. For applications with targets, globs are relative to a target directory. For example, if you had a target "*test*" and a glob "*/innerFolder*", the glob would look in "*[srcDir]/test/innerFolder*".
 - Every task is completely isolated from the others and can (and will) run concurrently
 - Path separators in `web-build.json` are UNIX separators "/"
 
@@ -126,6 +134,7 @@ There are only a few actions defined at the moment:
 - `concat` Concatenates all files. `concat` takes an optional parameter of `separator` and a required parameter of `output`. `separator` defines the separator as a string to use in between files. `output` specifies the directory and file name to create relative to the `[buildDir]`.
 - `js-minify` Minify JavaScript files. `js-minify` takes the optional parameter of `output`. If `output` is specified, it will only be used if there is only one file going into it (for example: when the previous action is a `concat` action). If `output` is omitted, the files will simply append .min.js to the filename.
 - `sass` Compile SASS files. `sass` takes no parameters. `sass` first collates glob files before compiling them with libsass. This allows you to have a different `variables.scss` per build target that can be included in another SASS sheet using a simple relative path.
+- `shell` Run a shell command. `shell` takes one parameter of `command`. There are two placeholders that may be used in your commands: `{FILE}` and `{FILES}`. A command using the `{FILE}` placeholder will be run against all matching files. This may be a slow process and is not the preferable option. A command using the `{FILES}` placeholder will run a command against a white-space separated list of all matching files. For example: `tsc -outDir ./build/ts {FILES}` will be replaced with `tsc --outDir ./build/ts ./src/file1 ./src/file2 ./src/file3`. <br><br>At the moment the `shell` action does not support returning a list of affected files as most of the other actions do. Instead the input files are passed to the next action unchanged.<br><br>In addition, `shell` actions that require different commands per platform are not supported at this time. 
 
 
 ## License

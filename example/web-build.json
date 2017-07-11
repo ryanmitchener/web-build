@@ -42,15 +42,15 @@
             "globs": ["(.png|.jpg|.svg)"],
             "actions": [{"action": "collate"}]
         },
-        "CMD Test": {
+        "Shell Test": {
             "globs": [".ts"],
             "actions": [{
-                    "action": "cmd",
+                    "action": "shell",
                     "options": {
                         "command": "tsc --module es6 -outDir ./build/ts {FILES}"
                     }
                 },{
-                    "action": "cmd",
+                    "action": "shell",
                     "options": {
                         "command": "rollup ./build/ts/test.js --format iife --output ./build/ts/bundle.js"
                     }

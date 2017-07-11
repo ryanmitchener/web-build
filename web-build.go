@@ -14,7 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const version string = "1.0.1"
+const version string = "1.1.0"
 
 var argZip string
 var argTarget string
@@ -225,8 +225,8 @@ func runTask(name string, task Task) {
 			actioner = jsMinifyAction{}
 		case "sass":
 			actioner = sassAction{}
-		case "cmd":
-			actioner = cmdAction{}
+		case "shell":
+			actioner = shellAction{}
 		default:
 			continue
 		}

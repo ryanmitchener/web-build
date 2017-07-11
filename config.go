@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-var validActions = []string{"collate", "concat", "js-minify", "sass", "cmd"}
+var validActions = []string{"collate", "concat", "js-minify", "sass", "shell"}
 
 // Config defines the struct for the User Configuration file
 type Config struct {

@@ -241,9 +241,9 @@ func (action sassAction) Action(files []string, options map[string]interface{}) 
 	return outputFiles
 }
 
-type cmdAction struct{}
+type shellAction struct{}
 
-func (action cmdAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
+func (action shellAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
 	command, ok := options["command"].(string)
 	if !ok {
 		errorMsg("Invalid command name", nil)
