@@ -285,7 +285,7 @@ func (action cmdAction) Action(files []string, options map[string]interface{}) (
 
 func runCommand(cmdName string, args []string) {
 	cmd := exec.Command(cmdName, args...)
-	if err := cmd.Run(); err != nil {
-		errorMsg(fmt.Sprintf("Error running command '%s'", cmdName), err)
+	if response, err := cmd.CombinedOutput(); err != nil {
+		errorMsg(fmt.Sprintf("Error running command '%s'\n%s", cmdName, response), err)
 	}
 }
