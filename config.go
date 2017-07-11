@@ -2,8 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 )
+
+var validActions = []string{"collate", "concat", "js-minify", "sass", "cmd"}
 
 // Config defines the struct for the User Configuration file
 type Config struct {
@@ -47,5 +50,20 @@ func parseConfig() (Config, error) {
 		return unmarshalledData, &invalidTargetError{unmarshalledData.Target}
 	}
 
+	if _, err := checkValidActions(unmarshalledData.Tasks); err != nil {
+		return unmarshalledData, err
+	}
+
 	return unmarshalledData, err
+}
+
+func checkValidActions(tasks map[string]Task) (bool, error) {
+	for taskName, task := range tasks {
+		for _, action := range task.Actions {
+			if !stringInSlice(action.Action, validActions) {
+				return false, fmt.Errorf("invalid action '%s' in task '%s'", action.Action, taskName)
+			}
+		}
+	}
+	return true, nil
 }

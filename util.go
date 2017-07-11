@@ -87,3 +87,12 @@ func errorMsg(message string, err error) {
 		fmt.Printf("\nError: %s\n\n", message)
 	}
 }
+
+func stringInSlice(value string, slice []string) bool {
+	for _, item := range slice {
+		if value == item {
+			return true
+		}
+	}
+	return false
+}
