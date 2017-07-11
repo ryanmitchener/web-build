@@ -128,7 +128,9 @@ func run(done chan<- bool, runWatcher bool) {
 		return
 	}
 
-	fmt.Printf("Building target: %s\n", fmtCyan(config.Target))
+	if len(config.Targets) > 0 {
+		fmt.Printf("Building target: %s\n", fmtCyan(config.Target))
+	}
 	fmt.Printf("Running Tasks...\n")
 	runTasks(config.Tasks)
 	fmt.Printf("Completed in: %s\n\n", fmtCyan(timestamp()-start, "ms"))
@@ -199,8 +201,18 @@ func runTasks(tasks map[string]Task) {
 
 func runTask(name string, task Task) {
 	start := timestamp()
-	files := resolveTargetFiles(task.Globs)
+	var files []string
+	if len(config.Targets) == 0 {
+		files = glob(task.Globs, config.SrcDir)
+	} else {
+		files = resolveTargetFiles(task.Globs)
+	}
 	prevOutput := files
+
+	if len(files) == 0 {
+		printFinishedTask(name, start)
+		return
+	}
 
 	for _, action := range task.Actions {
 		var actioner Actioner
@@ -220,6 +232,10 @@ func runTask(name string, task Task) {
 		}
 		prevOutput = actioner.Action(prevOutput, action.Options)
 	}
+	printFinishedTask(name, start)
+}
+
+func printFinishedTask(name string, start int64) {
 	fmt.Printf("  %s: %s\n", fmtGreen(name), fmtCyan(timestamp()-start, "ms"))
 }
 
@@ -352,6 +368,9 @@ func targetPathRegex() (*regexp.Regexp, error) {
 }
 
 func checkValidTarget(targetName string, c Config) bool {
+	if targetName == "" && len(c.Targets) == 0 {
+		return true
+	}
 	for target := range c.Targets {
 		if target == targetName {
 			return true
