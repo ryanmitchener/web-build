@@ -14,7 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const version string = "1.1.0"
+const version string = "1.1.1"
 
 var argZip string
 var argTarget string
@@ -354,16 +354,19 @@ func glob(globs []string, baseDir string) []string {
 }
 
 func targetPathRegex() (*regexp.Regexp, error) {
-	expression := fmt.Sprintf("%s/(", config.SrcDir)
-	count := 0
-	for k := range config.Targets {
-		if count > 0 {
-			expression += "|"
+	expression := config.SrcDir
+	if len(config.Targets) > 0 {
+		expression = fmt.Sprintf("%s/(", expression)
+		count := 0
+		for k := range config.Targets {
+			if count > 0 {
+				expression += "|"
+			}
+			expression += k
+			count++
 		}
-		expression += k
-		count++
+		expression += ")"
 	}
-	expression += ")"
 	return regexp.Compile(expression)
 }
 
