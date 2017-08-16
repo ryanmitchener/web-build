@@ -14,7 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const version string = "1.1.1"
+const version string = "1.2.0"
 
 var argZip string
 var argTarget string

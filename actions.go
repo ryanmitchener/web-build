@@ -109,6 +109,15 @@ func (action concatAction) Action(files []string, options map[string]interface{}
 type jsMinifyAction struct{}
 
 func (action jsMinifyAction) Action(files []string, options map[string]interface{}) (outputFiles []string) {
+	if newFile, ok := options["input"]; ok {
+		if newFile, ok := newFile.(string); ok {
+			files = []string{newFile}
+		} else {
+			errorMsg("Invalid 'input' option in 'js-minify' action.", nil)
+			return files
+		}
+	}
+
 	if len(files) == 0 {
 		return files
 	}
