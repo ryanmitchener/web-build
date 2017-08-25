@@ -5,10 +5,13 @@ Web-build is a simple task runner/build system written in Go, built for web proj
 
 
 ## Updates
-### 1.2
+### 1.3.0
+- Added optional "targets" parameter to actions and tasks to allow specification of targets that actions and/or tasks should run on
+
+### 1.2.0
 - Added "input" option to js-minify
 
-### 1.1
+### 1.1.0
 - Added "shell" action to run command line commands inside of tasks (i.e. TypeScript, rollup, .etc)
 - Added more errors for configurations
 - Targets are no longer required to use web-build
@@ -109,8 +112,11 @@ A task can have any name. This name will be printed in the console during execut
 Tasks will run concurrently and should be considered completely isolated. For this reason, you should not
 have two tasks that manipulate the same files.
 
-Tasks are made up of two properties: `globs` and `actions`. The `globs` property is an array of strings
-while the `actions` property is an array of action objects.
+Tasks are made up of three properties: `globs`, `actions`, and `targets`. The `globs` property is an array of strings
+while the `actions` property is an array of action objects. The `targets` property is an array of strings that allows 
+specification of a target for the task to run. By default, all targets will run a task. If the `targets` property
+is specified, a task will only run if the current build target (or one of its dependencies) exists in the provided
+array of targets.
 
 
 #### Globs
@@ -131,6 +137,9 @@ For example, the following array of globs will select all JavaScript files excep
 Actions are run on glob results sequentially. The output files of an action are passed as the input to the next action. Action objects have the following properties:
 `action` The name of the action to run
 `options` This parameter is only required if the action requires parameters to be passed.
+`targets` An array of strings that allows specification of a target for the action to run. By default, all actions will be executed on all targets. 
+If the `targets` property is specified, an action will only run if the current build target (or one of its dependencies) exists in the provided
+array of targets.
 
 There are only a few actions defined at the moment:
 - `collate` Collects all files from the dependency and places them in their respective folder in the `[buildDir]`. This is the most basic of actions and essentially just places the files into the `[buildDir]` directory. `collate` takes the optional parameter `output`. This is the desired base output directory for all of the collated files.

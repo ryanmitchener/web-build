@@ -23,12 +23,14 @@ type Config struct {
 // Task defines the struct for a task
 type Task struct {
 	Actions []Action
+	Targets []string
 	Globs   []string
 }
 
 // Action defines the struct for a specific action to perform in a task
 type Action struct {
 	Action  string
+	Targets []string
 	Options map[string]interface{}
 }
 

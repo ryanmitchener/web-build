@@ -14,7 +14,7 @@ import (
 	"github.com/fsnotify/fsnotify"
 )
 
-const version string = "1.2.0"
+const version string = "1.3.0"
 
 var argZip string
 var argTarget string
@@ -188,6 +188,9 @@ func setup() error {
 func runTasks(tasks map[string]Task) {
 	var wg sync.WaitGroup
 	for name, task := range tasks {
+		if !shouldRunForTarget(config.Target, task.Targets) {
+			continue
+		}
 		name := name
 		task := task
 		wg.Add(1)
@@ -215,6 +218,10 @@ func runTask(name string, task Task) {
 	}
 
 	for _, action := range task.Actions {
+		if !shouldRunForTarget(config.Target, action.Targets) {
+			continue
+		}
+
 		var actioner Actioner
 		switch action.Action {
 		case "collate":
@@ -233,6 +240,22 @@ func runTask(name string, task Task) {
 		prevOutput = actioner.Action(prevOutput, action.Options)
 	}
 	printFinishedTask(name, start)
+}
+
+func shouldRunForTarget(currentTarget string, targets []string) bool {
+	if len(targets) == 0 {
+		return true
+	}
+
+	dependencies := getTargetDependencies(currentTarget)
+
+	for _, runTarget := range targets {
+		if stringInSlice(runTarget, dependencies) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func printFinishedTask(name string, start int64) {
@@ -284,14 +307,7 @@ func resolveTargetFiles(globs []string) []string {
 	var files []string
 	var keyOrder []string
 	fileCache := make(map[string]string)
-	target := config.Target
-	dependencies := []string{target}
-
-	// Get dependencies
-	for config.Targets[target].Dependency != "" {
-		target = config.Targets[target].Dependency
-		dependencies = append([]string{target}, dependencies...)
-	}
+	dependencies := getTargetDependencies(config.Target)
 
 	// Resolve the file list
 	for _, innerTarget := range dependencies {
@@ -310,6 +326,17 @@ func resolveTargetFiles(globs []string) []string {
 	}
 
 	return files
+}
+
+func getTargetDependencies(target string) []string {
+	dependencies := []string{target}
+
+	for config.Targets[target].Dependency != "" {
+		target = config.Targets[target].Dependency
+		dependencies = append([]string{target}, dependencies...)
+	}
+
+	return dependencies
 }
 
 func glob(globs []string, baseDir string) []string {
