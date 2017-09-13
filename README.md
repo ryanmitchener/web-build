@@ -46,6 +46,13 @@ go build ./
 This command will generate the binary web-build and place it in your current working directory. You may
 now move this binary wherever you want (preferably to a location in your PATH).
 
+To build on Windows, you will need to have GCC installed (MinGW-w64 works great). To build a statically linked
+binary with Windows, use the following command:
+
+```shell
+go build --ldflags "--extldflags '-static'" ./
+```
+
 
 ## Usage
 For help in using the binary, run the following command:
