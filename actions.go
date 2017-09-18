@@ -51,9 +51,19 @@ func (action collateAction) Action(files []string, options map[string]interface{
 		newFile = fmt.Sprintf("%s%s", outputDir, newFile)
 		outputFiles = append(outputFiles, newFile)
 
+		content, readErr := ioutil.ReadFile(file)
+		fileInfo, fileStatErr := os.Stat(file)
+
+		if readErr != nil {
+			errorMsg("Error copying file in collate action.", err)
+			continue
+		} else if fileStatErr != nil {
+			errorMsg("Error copying file in collate action.", fileStatErr)
+			continue
+		}
+
 		os.MkdirAll(dir, 0744)
-		content, _ := ioutil.ReadFile(file)
-		ioutil.WriteFile(newFile, content, 0644)
+		ioutil.WriteFile(newFile, content, fileInfo.Mode())
 	}
 	return outputFiles
 }

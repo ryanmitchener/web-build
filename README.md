@@ -5,6 +5,9 @@ Web-build is a simple task runner/build system written in Go, built for web proj
 
 
 ## Updates
+### 1.3.1
+- File permissions are now copied from their source permissions in the collate action
+
 ### 1.3.0
 - Added optional "targets" parameter to actions and tasks to allow specification of targets that actions and/or tasks should run on
 
