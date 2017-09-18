@@ -62,7 +62,7 @@ func (action collateAction) Action(files []string, options map[string]interface{
 			continue
 		}
 
-		os.MkdirAll(dir, 0744)
+		os.MkdirAll(dir, 0755)
 		ioutil.WriteFile(newFile, content, fileInfo.Mode())
 	}
 	return outputFiles

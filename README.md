@@ -5,6 +5,9 @@ Web-build is a simple task runner/build system written in Go, built for web proj
 
 
 ## Updates
+### 1.3.2
+- Changed default directory permissions to 0755
+
 ### 1.3.1
 - File permissions are now copied from their source permissions in the collate action
 
