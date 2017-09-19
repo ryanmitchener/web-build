@@ -5,6 +5,9 @@ Web-build is a simple task runner/build system written in Go, built for web proj
 
 
 ## Updates
+### 1.3.3
+- Fixed issue where terminal font color went to black instead of default terminal font color
+
 ### 1.3.2
 - Changed default directory permissions to 0755
 
